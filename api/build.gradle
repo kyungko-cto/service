@@ -1,0 +1,82 @@
+plugins {
+    id 'org.springframework.boot'
+}
+
+description = 'API Module - REST API Application'
+
+// 실행 가능한 Spring Boot JAR 생성 설정
+bootJar {
+    enabled = true
+    archiveFileName = "${project.name}-${project.version}.jar"
+}
+
+jar {
+    enabled = false
+}
+
+dependencies {
+    // ===== 내부 모듈 의존성 =====
+    implementation project(':common')
+    implementation project(':db')
+    implementation project(':auth')
+    implementation project(':domain')
+
+    // ===== Spring Boot Starters =====
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // 개발 편의성
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    // Actuator (헬스체크, 모니터링)
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // ===== Swagger/OpenAPI =====
+    // 접속 URL: http://localhost:8080/swagger-ui/index.html
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.11'
+
+    // ===== Jackson 추가 설정 =====
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    implementation 'com.fasterxml.jackson.module:jackson-module-parameter-names'
+
+    // ===== Logging =====
+    implementation 'net.logstash.logback:logstash-logback-encoder:8.0'
+
+    // ===== 테스트 =====
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'io.rest-assured:rest-assured'
+    testImplementation 'com.h2database:h2'
+
+    //redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+}
+
+springBoot {
+    mainClass = 'com.delivery.api.ApiApplication'
+}
+
+// 테스트 설정
+test {
+    useJUnitPlatform()
+    systemProperty 'spring.profiles.active', 'test'
+}
+
+// 통합 테스트 설정 (선택사항)
+task integrationTest(type: Test) {
+    useJUnitPlatform {
+        includeTags 'integration'
+    }
+    shouldRunAfter test
+
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+}

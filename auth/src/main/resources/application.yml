@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: shopping-auth
+
+# JWT 관련 설정
+jwt:
+  secret: "my-super-secret-key-1234567890"   # 운영 환경에서는 환경변수/Secret Manager로 관리
+  access-token-expiration-ms: 1800000        # 30분 (1000 * 60 * 30)
+  refresh-token-expiration-ms: 604800000     # 7일 (1000 * 60 * 60 * 24 * 7)
+
+# 보안 관련 추가 설정 (선택)
+server:
+  port: 8082   # auth 모듈이 따로 실행된다면 포트 지정

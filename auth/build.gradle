@@ -1,0 +1,48 @@
+plugins {
+    id 'org.springframework.boot'
+}
+
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
+dependencies {
+    implementation project(':db')
+    implementation project(':common')
+    implementation project(':api')
+    implementation project(':auth')
+
+
+    // Spring Boot Web (REST API용)
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // Spring Security (인증/인가)
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // JWT (io.jsonwebtoken 라이브러리)
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // Redis (토큰 블랙리스트, 세션 관리 등)
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // Validation (회원가입/로그인 DTO 검증)
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // DB 연동 (유저 정보 저장/조회)
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'com.mysql:mysql-connector-j' // DB가 MySQL일 경우
+
+    // Lombok (root에서 공통으로 선언했지만, IDE 인식 위해 추가 가능)
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // 테스트
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}

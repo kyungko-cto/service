@@ -1,0 +1,53 @@
+plugins {
+    id 'org.springframework.boot'
+}
+
+description = 'Common Module - Shared utilities, DTOs, Configurations'
+
+// 라이브러리 모듈이므로 실행 불가능한 JAR 생성
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+    archiveClassifier = ''
+}
+
+dependencies {
+    // ===== Spring Core =====
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework:spring-context'
+
+    // ===== Validation =====
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // ===== JWT 토큰 처리 =====
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // ===== Jackson (JSON 처리) =====
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+    // ===== Apache Commons (유틸리티) =====
+    implementation 'org.apache.commons:commons-lang3'
+    implementation 'commons-codec:commons-codec'
+
+    // ===== Spring Web (필요 시 - 예외처리, 응답 객체) =====
+    compileOnly 'org.springframework.boot:spring-boot-starter-web'
+
+    // ===== 테스트 =====
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.assertj:assertj-core'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.compilerArgs += ['-parameters']
+}
+
+test {
+    useJUnitPlatform()
+}

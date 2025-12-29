@@ -1,0 +1,10 @@
+rootProject.name = 'service'
+
+include 'api'
+include 'common'
+include 'db'
+include 'security'
+include 'auth'
+include 'admin-api'
+include 'domain'
+include 'application'
