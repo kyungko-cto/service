@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  baemin-api:
+    build: .
+    ports:
+      - "8080:8080"
+    deploy:
+      replicas: 5 # 서버 5대로 10만 트래픽 분산
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      - baemin-db
+      - baemin-redis
+
+  baemin-redis:
+    image: redis:7-alpine
+    command: redis-server --maxmemory 2gb --maxmemory-policy allkeys-lru
+
+  baemin-db:
+    image: mysql:8
+    environment:
+      MYSQL_DATABASE: delivery
+      MYSQL_ROOT_PASSWORD: password

@@ -4,8 +4,8 @@ package com.delivery.api.domain.cart.converter;
 
 import com.delivery.api.domain.cart.dto.CartItemRequest;
 import com.delivery.api.domain.cart.dto.CartResponse;
-import com.delivery.domain.cart.model.Cart;
-import com.delivery.domain.cart.model.CartItem;
+import com.delivery.domain.cart.Cart;
+import com.delivery.domain.cart.CartItem;
 import lombok.experimental.UtilityClass;
 
 import java.util.List;

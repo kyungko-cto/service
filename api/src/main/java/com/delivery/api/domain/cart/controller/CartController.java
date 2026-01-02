@@ -7,8 +7,8 @@ import com.delivery.api.domain.cart.converter.CartConverter;
 import com.delivery.api.domain.cart.dto.CartItemRequest;
 import com.delivery.api.domain.cart.dto.CartResponse;
 import com.delivery.api.domain.cart.dto.RemoveItemRequest;
-import com.delivery.application.cart.CartService;
 import com.delivery.auth.dto.UserRequest;
+import com.delivery.service.cart.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,8 +24,9 @@ public class CartController {
     @PostMapping("/add")
     public ResponseEntity<ApiResponse<Void>> addItem(@AuthenticationPrincipal UserRequest user,
                                                      @RequestBody CartItemRequest request) {
-        cartService.addItem(user.getId(), CartConverter.toDomain(request));
-        return ApiResponse.success(null);
+        cartService.addItem(user.getId(), CartConverter.toDomain(request));//토큰에서 받은 유저도 컨버터로 해야하지않나
+        return ApiResponse.success(null);//아이템 추가한거에 대한 카트를 반환해야하지않나
+        //return cartResponse를 만들어서
     }
 
     @GetMapping
