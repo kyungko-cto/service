@@ -1,6 +1,5 @@
 package com.delivery.api.domain.delivery.dto;
 
-
 import com.delivery.domain.delivery.DeliveryStatus;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,6 +7,11 @@ import lombok.Getter;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+/**
+ * 배달 응답 DTO
+ * 
+ * 리팩토링: 주석 추가
+ */
 @Getter
 @Builder
 public class DeliveryResponse {

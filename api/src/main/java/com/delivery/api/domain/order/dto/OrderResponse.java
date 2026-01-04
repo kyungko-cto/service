@@ -1,7 +1,6 @@
 package com.delivery.api.domain.order.dto;
 
-
-import com.delivery.domain.order.type.OrderStatus;
+import com.delivery.domain.order.OrderStatus;
 import lombok.Builder;
 import lombok.Getter;
 

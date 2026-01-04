@@ -36,6 +36,9 @@ public class StoreEntity {
     @Enumerated(EnumType.STRING)
     private StoreStatus status;
 
+    @Column(length = 20)
+    private String phone;
+
     private LocalTime openTime;
     private LocalTime closeTime;
 
@@ -54,6 +57,7 @@ public class StoreEntity {
     public void open() { this.status = StoreStatus.OPEN; }
     public void close() { this.status = StoreStatus.CLOSED; }
     public void pause() { this.status = StoreStatus.PAUSED; }
+    public void suspend() { this.status = StoreStatus.SUSPENDED; }
 
     public void changeAddress(AddressEntity newAddress) { this.address = newAddress; }
 

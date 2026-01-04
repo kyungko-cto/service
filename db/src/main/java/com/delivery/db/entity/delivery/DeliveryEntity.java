@@ -31,6 +31,9 @@ public class DeliveryEntity {
     @Column(length = 64)
     private String riderName;
 
+    @Column
+    private UUID destinationAddressId;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 16)
     private DeliveryStatus status;

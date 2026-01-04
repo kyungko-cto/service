@@ -1,29 +1,65 @@
 server:
-  port: 8082
+  port: 8080
   servlet:
     encoding:
       charset: UTF-8
       enabled: true
-      force: true   # 요청/응답 모두 UTF-8 강제 적용
+      force: true
 
 spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  
   datasource:
-    url: jdbc:mysql://localhost:3307/delivery_v0?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
-    username: root
-    password: knu74501@
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:delivery}?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:password}
     driver-class-name: com.mysql.cj.jdbc.Driver
+    # HikariCP 커넥션 풀 설정
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      leak-detection-threshold: 60000
 
   jpa:
     hibernate:
-      ddl-auto: validate   # 엔티티와 DB 스키마 일치 여부만 검증
-    show-sql: true
+      ddl-auto: validate
+    show-sql: ${SHOW_SQL:false}
     properties:
       hibernate:
         format_sql: true
         use_sql_comments: true
         dialect: org.hibernate.dialect.MySQLDialect
+        jdbc:
+          batch_size: 50
+          order_inserts: true
+          order_updates: true
 
   redis:
-    host: localhost
-    port: 6379
-    password: ""   # 비밀번호 없으면 빈 문자열로 처리
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:}
+    timeout: 3000
+    lettuce:
+      pool:
+        max-active: 20
+        max-idle: 10
+        min-idle: 5
+
+  task:
+    execution:
+      pool:
+        core-size: 5
+        max-size: 20
+        queue-capacity: 100
+        keep-alive: 60s
+
+logging:
+  level:
+    root: INFO
+    com.delivery: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
