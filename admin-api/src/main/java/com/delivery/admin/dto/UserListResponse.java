@@ -1,0 +1,23 @@
+package com.delivery.admin.dto;
+
+import lombok.Builder;
+import lombok.Getter;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+/**
+ * 사용자 목록 응답 DTO
+ */
+@Getter
+@Builder
+public class UserListResponse {
+    private UUID id;
+    private String email;
+    private String username;
+    private String role;
+    private String grade;
+    private String status;
+    private LocalDateTime createdAt;
+}
+

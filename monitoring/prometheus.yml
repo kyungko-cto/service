@@ -1,0 +1,40 @@
+# Prometheus 설정 - 모니터링 및 메트릭 수집
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  # Spring Boot Actuator 메트릭
+  - job_name: 'delivery-api'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['api:8080']
+        labels:
+          service: 'delivery-api'
+          environment: 'production'
+
+  # MySQL 메트릭 (mysqld_exporter 필요)
+  - job_name: 'mysql'
+    static_configs:
+      - targets: ['mysql-exporter:9104']
+        labels:
+          service: 'mysql'
+          environment: 'production'
+
+  # Redis 메트릭 (redis_exporter 필요)
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+        labels:
+          service: 'redis'
+          environment: 'production'
+
+  # Nginx 메트릭 (nginx-prometheus-exporter 필요)
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx-exporter:9113']
+        labels:
+          service: 'nginx'
+          environment: 'production'
+

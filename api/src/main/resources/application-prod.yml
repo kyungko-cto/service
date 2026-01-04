@@ -1,0 +1,127 @@
+# 프로덕션 환경 설정 - 대규모 트래픽 대응 (10만명 동시 이용)
+server:
+  port: 8080
+  tomcat:
+    # 커넥션 풀 최적화 - 대규모 트래픽 대응
+    threads:
+      max: 500                    # 최대 스레드 수 (10만명 동시 이용 대비)
+      min-spare: 50               # 최소 유지 스레드
+    max-connections: 10000        # 최대 동시 연결 수
+    accept-count: 500             # 대기 큐 크기
+    connection-timeout: 20000     # 연결 타임아웃 (20초)
+  compression:
+    enabled: true                 # 응답 압축 활성화
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain
+    min-response-size: 1024       # 1KB 이상만 압축
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  datasource:
+    # HikariCP 커넥션 풀 최적화 - 대규모 트래픽 대응
+    hikari:
+      maximum-pool-size: 50        # 최대 커넥션 풀 크기 (DB 서버 성능에 맞게 조정)
+      minimum-idle: 10            # 최소 유지 커넥션
+      connection-timeout: 30000   # 커넥션 획득 타임아웃 (30초)
+      idle-timeout: 600000        # 유휴 커넥션 타임아웃 (10분)
+      max-lifetime: 1800000       # 커넥션 최대 생명주기 (30분)
+      leak-detection-threshold: 60000  # 커넥션 누수 감지 (60초)
+      pool-name: DeliveryHikariPool
+      # 성능 최적화 옵션
+      connection-test-query: SELECT 1
+      auto-commit: false          # 트랜잭션 제어를 애플리케이션에서 수행
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false               # 프로덕션에서는 SQL 로그 비활성화
+    properties:
+      hibernate:
+        format_sql: false
+        use_sql_comments: false
+        dialect: org.hibernate.dialect.MySQLDialect
+        # 성능 최적화 설정
+        jdbc:
+          batch_size: 50          # 배치 처리 크기
+          order_inserts: true      # INSERT 배치 최적화
+          order_updates: true     # UPDATE 배치 최적화
+        # 2차 캐시 설정 (선택사항)
+        cache:
+          use_second_level_cache: false  # 필요시 활성화
+          use_query_cache: false
+        # 통계 정보 비활성화 (성능 향상)
+        generate_statistics: false
+
+  redis:
+    host: ${REDIS_HOST:redis}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:}
+    timeout: 3000                 # 연결 타임아웃 (3초)
+    lettuce:
+      pool:
+        max-active: 50            # 최대 활성 연결 수
+        max-idle: 20               # 최대 유휴 연결 수
+        min-idle: 5                # 최소 유휴 연결 수
+      shutdown-timeout: 100        # 종료 타임아웃 (100ms)
+
+  # 비동기 처리 설정
+  task:
+    execution:
+      pool:
+        core-size: 10             # 코어 스레드 수
+        max-size: 50               # 최대 스레드 수
+        queue-capacity: 100       # 큐 용량
+        keep-alive: 60s            # 스레드 유지 시간
+    scheduling:
+      pool:
+        size: 5                    # 스케줄링 스레드 수
+
+# 로깅 설정 - 프로덕션 최적화
+logging:
+  level:
+    root: INFO
+    com.delivery: INFO
+    org.springframework.web: WARN
+    org.hibernate: WARN
+    org.springframework.security: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: /var/log/delivery/application.log
+    max-size: 100MB
+    max-history: 30
+
+# 애플리케이션 성능 모니터링
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  health:
+    redis:
+      enabled: true
+    db:
+      enabled: true
+
+# 커스텀 성능 설정
+delivery:
+  cache:
+    enabled: true
+    ttl: 3600                     # 캐시 TTL (1시간)
+  async:
+    enabled: true
+    core-pool-size: 10
+    max-pool-size: 50
+    queue-capacity: 1000
+

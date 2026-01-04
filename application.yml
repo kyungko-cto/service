@@ -1,0 +1,33 @@
+server:
+  port: 8081
+  tomcat:
+    threads:
+      max: 200 # 가상 스레드를 사용하므로 전통적인 스레드 풀은 크게 잡지 않아도 됩니다.
+
+spring:
+  threads:
+    virtual:
+      enabled: true # 핵심: 10만 TPS 대응을 위한 가상 스레드 활성화
+
+  datasource:
+    url: jdbc:mysql://baemin-db:3306/delivery?useSSL=false&serverTimezone=UTC
+    username: admin
+    password: password
+    hikari:
+      maximum-pool-size: 50 # 커넥션 병목 방지
+      minimum-idle: 10
+      idle-timeout: 30000
+      max-lifetime: 2000000
+
+  data:
+    redis:
+      host: baemin-redis
+      port: 6379
+      lettuce:
+        pool:
+          max-active: 100 # Redis 병목 방지
+
+jwt:
+  secret: your-very-long-and-secure-random-secret-key-for-baemin-project
+  access-token-expiration-ms: 3600000 # 1시간
+  refresh-token-expiration-ms: 604800000 # 7일
